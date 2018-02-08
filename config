@@ -1,0 +1,7 @@
+rofi.color-enabled: true
+rofi.color-window: #000000, #969696, #969696
+rofi.color-normal: #000000, #969696, #010101, #969696, #07322B
+rofi.color-active: #07322B, #929D7F, #07322B, #929D7F, #07322B
+rofi.color-urgent: #07322B, #747661, #07322B, #747661, #07322B
+rofi.font: Droid Sans Mono for Powerline 11
+rofi.opacity: 75

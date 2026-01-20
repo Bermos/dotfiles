@@ -1,0 +1,577 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+ * LCARS-INSPIRED WAYBAR THEME
+ * Enterprise-E aesthetic: Glassy, dark, blue-white with red warnings
+ * Optimized for 32:9 ultrawide displays
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * COLOR PALETTE (LCARS Enterprise-E inspired)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+@define-color bg_dark          rgba(15, 17, 23, 0.85);
+@define-color bg_glass         rgba(25, 30, 45, 0.75);
+@define-color bg_module        rgba(35, 45, 65, 0.65);
+@define-color bg_hover         rgba(55, 75, 105, 0.80);
+@define-color bg_active        rgba(65, 95, 145, 0.85);
+
+@define-color border_dim       rgba(80, 100, 140, 0.30);
+@define-color border_bright    rgba(120, 160, 220, 0.50);
+@define-color border_glow      rgba(100, 180, 255, 0.60);
+
+@define-color text_primary     #e8edf5;
+@define-color text_secondary   #a8b5c8;
+@define-color text_dim         #6a7a8f;
+
+@define-color accent_blue      #4a9eff;
+@define-color accent_cyan      #5ad8e6;
+@define-color accent_ice       #7dcfff;
+@define-color accent_purple    #9580ff;
+
+@define-color status_warning   #ff9f43;
+@define-color status_critical  #ff5555;
+@define-color status_success   #50fa7b;
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * BASE BAR STYLING
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+* {
+    font-family: "JetBrainsMono Nerd Font", "CaskaydiaCove Nerd Font", "FiraCode Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background: transparent;
+}
+
+window#waybar > box {
+    background: @bg_dark;
+    border: 1px solid @border_dim;
+    border-radius: 12px;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(74, 158, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * TOOLTIP STYLING
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+tooltip {
+    background: @bg_dark;
+    border: 1px solid @border_bright;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+tooltip label {
+    color: @text_primary;
+    padding: 6px 10px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * MODULE CONTAINERS
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.modules-left {
+    padding-left: 8px;
+}
+
+.modules-center {
+    padding: 0 20px;
+}
+
+.modules-right {
+    padding-right: 8px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * GENERIC MODULE STYLING
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#custom-logo,
+#workspaces,
+#window,
+#clock,
+#custom-media,
+#custom-weather,
+#tray,
+#network,
+#bluetooth,
+#pulseaudio,
+#backlight,
+#cpu,
+#memory,
+#temperature,
+#battery,
+#custom-power {
+    color: @text_primary;
+    padding: 4px 12px;
+    margin: 4px 2px;
+    background: @bg_module;
+    border: 1px solid @border_dim;
+    border-radius: 8px;
+    transition: all 200ms ease;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * LOGO / LAUNCHER
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#custom-logo {
+    font-size: 18px;
+    color: @accent_cyan;
+    background: linear-gradient(135deg, @bg_glass, @bg_module);
+    border-color: @accent_cyan;
+    border-width: 1px;
+    padding: 4px 14px;
+    margin-left: 4px;
+    text-shadow: 0 0 10px rgba(90, 216, 230, 0.5);
+}
+
+#custom-logo:hover {
+    background: @bg_hover;
+    border-color: @accent_ice;
+    box-shadow: 
+        0 0 15px rgba(90, 216, 230, 0.3),
+        inset 0 0 10px rgba(90, 216, 230, 0.1);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * WORKSPACES
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#workspaces {
+    background: @bg_glass;
+    padding: 2px 6px;
+}
+
+#workspaces button {
+    color: @text_dim;
+    padding: 4px 10px;
+    margin: 2px 1px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    transition: all 150ms ease;
+}
+
+#workspaces button:hover {
+    color: @accent_ice;
+    background: @bg_hover;
+    border-color: @border_dim;
+    box-shadow: 0 0 8px rgba(125, 207, 255, 0.2);
+}
+
+#workspaces button.active {
+    color: @accent_cyan;
+    background: @bg_active;
+    border-color: @accent_cyan;
+    font-weight: 700;
+    box-shadow: 
+        0 0 12px rgba(90, 216, 230, 0.3),
+        inset 0 0 8px rgba(90, 216, 230, 0.1);
+}
+
+#workspaces button.urgent {
+    color: @status_critical;
+    background: rgba(255, 85, 85, 0.2);
+    border-color: @status_critical;
+    animation-name: blink-urgent;
+    animation-duration: 0.8s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * WINDOW TITLE
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#window {
+    color: @text_secondary;
+    background: transparent;
+    border: none;
+    font-style: italic;
+    padding-left: 16px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * SEPARATOR
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#custom-separator {
+    color: @border_dim;
+    background: transparent;
+    border: none;
+    padding: 0 4px;
+    font-size: 16px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * CLOCK (CENTERPIECE)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#clock {
+    font-size: 14px;
+    font-weight: 600;
+    color: @accent_ice;
+    background: linear-gradient(135deg, @bg_glass, rgba(74, 158, 255, 0.15));
+    border-color: @accent_blue;
+    padding: 4px 20px;
+    text-shadow: 0 0 8px rgba(125, 207, 255, 0.4);
+    box-shadow: 
+        0 0 20px rgba(74, 158, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+#clock:hover {
+    background: linear-gradient(135deg, @bg_hover, rgba(74, 158, 255, 0.25));
+    box-shadow: 
+        0 0 25px rgba(74, 158, 255, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * MEDIA PLAYER
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#custom-media {
+    color: @accent_purple;
+    background: @bg_module;
+    border-color: @accent_purple;
+    font-style: italic;
+}
+
+#custom-media:hover {
+    background: @bg_hover;
+    box-shadow: 0 0 12px rgba(149, 128, 255, 0.3);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * WEATHER
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#custom-weather {
+    color: @text_secondary;
+    background: @bg_module;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * SYSTEM TRAY
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#tray {
+    background: @bg_glass;
+    padding: 4px 8px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background: rgba(255, 159, 67, 0.2);
+    border-color: @status_warning;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * NETWORK
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#network {
+    color: @accent_cyan;
+}
+
+#network:hover {
+    background: @bg_hover;
+    box-shadow: 0 0 12px rgba(90, 216, 230, 0.2);
+}
+
+#network.disconnected {
+    color: @text_dim;
+    background: @bg_module;
+}
+
+#network.linked {
+    color: @status_warning;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * BLUETOOTH
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#bluetooth {
+    color: @accent_blue;
+}
+
+#bluetooth:hover {
+    background: @bg_hover;
+    box-shadow: 0 0 12px rgba(74, 158, 255, 0.2);
+}
+
+#bluetooth.connected {
+    color: @accent_cyan;
+    border-color: @accent_cyan;
+}
+
+#bluetooth.off,
+#bluetooth.disabled {
+    color: @text_dim;
+    background: transparent;
+    border: none;
+    padding: 4px 6px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * AUDIO / PULSEAUDIO
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#pulseaudio {
+    color: @accent_ice;
+}
+
+#pulseaudio:hover {
+    background: @bg_hover;
+    box-shadow: 0 0 12px rgba(125, 207, 255, 0.2);
+}
+
+#pulseaudio.muted {
+    color: @text_dim;
+    background: rgba(40, 45, 60, 0.5);
+}
+
+#pulseaudio.bluetooth {
+    color: @accent_blue;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * BACKLIGHT
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#backlight {
+    color: @status_warning;
+}
+
+#backlight:hover {
+    background: @bg_hover;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * CPU - WITH WARNING STATES
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#cpu {
+    color: @accent_cyan;
+}
+
+#cpu:hover {
+    background: @bg_hover;
+    box-shadow: 0 0 12px rgba(90, 216, 230, 0.2);
+}
+
+#cpu.warning {
+    color: @status_warning;
+    background: rgba(255, 159, 67, 0.15);
+    border-color: @status_warning;
+    animation-name: blink-warning;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#cpu.critical {
+    color: @status_critical;
+    background: rgba(255, 85, 85, 0.2);
+    border-color: @status_critical;
+    animation-name: blink-critical;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * MEMORY - WITH WARNING STATES
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#memory {
+    color: @accent_purple;
+}
+
+#memory:hover {
+    background: @bg_hover;
+    box-shadow: 0 0 12px rgba(149, 128, 255, 0.2);
+}
+
+#memory.warning {
+    color: @status_warning;
+    background: rgba(255, 159, 67, 0.15);
+    border-color: @status_warning;
+    animation-name: blink-warning;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#memory.critical {
+    color: @status_critical;
+    background: rgba(255, 85, 85, 0.2);
+    border-color: @status_critical;
+    animation-name: blink-critical;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * TEMPERATURE - WITH WARNING STATES
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#temperature {
+    color: @accent_blue;
+}
+
+#temperature:hover {
+    background: @bg_hover;
+}
+
+#temperature.critical {
+    color: @status_critical;
+    background: rgba(255, 85, 85, 0.2);
+    border-color: @status_critical;
+    animation-name: blink-critical;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * BATTERY - WITH WARNING STATES
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#battery {
+    color: @status_success;
+}
+
+#battery:hover {
+    background: @bg_hover;
+}
+
+#battery.charging,
+#battery.plugged {
+    color: @accent_cyan;
+    border-color: @accent_cyan;
+}
+
+#battery.full {
+    color: @status_success;
+    border-color: @status_success;
+}
+
+#battery.warning:not(.charging) {
+    color: @status_warning;
+    background: rgba(255, 159, 67, 0.15);
+    border-color: @status_warning;
+    animation-name: blink-warning;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#battery.critical:not(.charging) {
+    color: @status_critical;
+    background: rgba(255, 85, 85, 0.2);
+    border-color: @status_critical;
+    animation-name: blink-critical;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * POWER BUTTON
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#custom-power {
+    font-size: 16px;
+    color: @status_critical;
+    background: transparent;
+    border: 1px solid rgba(255, 85, 85, 0.3);
+    padding: 4px 12px;
+    margin-right: 4px;
+    transition: all 200ms ease;
+}
+
+#custom-power:hover {
+    color: #ffffff;
+    background: rgba(255, 85, 85, 0.3);
+    border-color: @status_critical;
+    box-shadow: 
+        0 0 15px rgba(255, 85, 85, 0.4),
+        inset 0 0 10px rgba(255, 85, 85, 0.1);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * ANIMATIONS (GTK CSS compatible - only color/background-color supported)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+@keyframes blink-warning {
+    to {
+        color: #ffffff;
+        background-color: rgba(255, 159, 67, 0.4);
+    }
+}
+
+@keyframes blink-critical {
+    to {
+        color: #ffffff;
+        background-color: rgba(255, 85, 85, 0.5);
+    }
+}
+
+@keyframes blink-urgent {
+    to {
+        color: #ffffff;
+        background-color: rgba(255, 85, 85, 0.4);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * HOVER GLOW EFFECT (subtle Enterprise scanner aesthetic)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#network:hover,
+#bluetooth.connected:hover,
+#pulseaudio:hover,
+#cpu:hover,
+#memory:hover,
+#clock:hover {
+    border-color: @border_glow;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * RESPONSIVE ADJUSTMENTS FOR ULTRA-WIDE
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+/* Extra spacing for 32:9 to prevent cramped feel */
+.modules-left > *,
+.modules-right > * {
+    margin: 4px 3px;
+}
+
+.modules-center > * {
+    margin: 4px 8px;
+}

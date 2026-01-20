@@ -1,0 +1,149 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+ * LCARS-INSPIRED WOFI THEME
+ * Enterprise-E aesthetic: Glassy, dark, blue-white with red warnings
+ * Matches waybar theme
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * MAIN WINDOW
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+window {
+    font-family: "JetBrainsMono Nerd Font", "CaskaydiaCove Nerd Font", monospace;
+    font-size: 14px;
+    background-color: rgba(15, 17, 23, 0.92);
+    border: 1px solid rgba(80, 100, 140, 0.4);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * OUTER BOX (contains input + scroll)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#outer-box {
+    margin: 12px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * SEARCH INPUT
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#input {
+    background-color: rgba(35, 45, 65, 0.7);
+    border: 1px solid rgba(74, 158, 255, 0.4);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    color: #e8edf5;
+    font-size: 15px;
+}
+
+#input:focus {
+    border-color: rgba(90, 216, 230, 0.7);
+    box-shadow: 0 0 12px rgba(90, 216, 230, 0.2);
+}
+
+#input image {
+    color: #5ad8e6;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * RESULTS LIST
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#scroll {
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+#inner-box {
+    background-color: transparent;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * INDIVIDUAL ENTRIES
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#entry {
+    padding: 10px 14px;
+    margin: 2px 0;
+    border-radius: 6px;
+    background-color: rgba(35, 45, 65, 0.3);
+    border: 1px solid transparent;
+}
+
+#entry:selected {
+    background-color: rgba(65, 95, 145, 0.6);
+    border-color: rgba(90, 216, 230, 0.5);
+}
+
+#entry:hover {
+    background-color: rgba(55, 75, 105, 0.5);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * ENTRY TEXT
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#text {
+    color: #a8b5c8;
+    margin-left: 10px;
+}
+
+#entry:selected #text {
+    color: #e8edf5;
+    text-shadow: 0 0 8px rgba(125, 207, 255, 0.3);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * APPLICATION ICONS
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#img {
+    margin-right: 8px;
+}
+
+#entry:selected #img {
+    /* Slight glow effect on selected icon */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * EXPANDER (for nested results)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#expander-box {
+    background-color: transparent;
+}
+
+expander {
+    color: #5ad8e6;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * SCROLLBAR (if visible)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+scrollbar {
+    background-color: transparent;
+    border: none;
+}
+
+scrollbar slider {
+    background-color: rgba(90, 216, 230, 0.3);
+    border-radius: 4px;
+    min-width: 6px;
+    min-height: 20px;
+}
+
+scrollbar slider:hover {
+    background-color: rgba(90, 216, 230, 0.5);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * PROMPT TEXT (if shown)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#text:selected {
+    color: #7dcfff;
+}

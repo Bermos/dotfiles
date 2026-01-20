@@ -1,0 +1,252 @@
+{
+    // LCARS-Inspired Waybar Config for 32:9 Ultrawide
+    // Enterprise-E aesthetic: Dark, glassy, blue-white with red warnings
+    
+    "layer": "top",
+    "position": "top",
+    "height": 38,
+    "spacing": 0,
+    "margin-top": 6,
+    "margin-left": 12,
+    "margin-right": 12,
+    
+    // Module layout - spread across ultrawide
+    "modules-left": [
+        "custom/logo",
+        "hyprland/workspaces",
+        "custom/separator",
+        "hyprland/window"
+    ],
+    
+    "modules-center": [
+        "custom/media",
+        "clock",
+        "custom/weather"
+    ],
+    
+    "modules-right": [
+        "tray",
+        "custom/separator",
+        "network",
+        "bluetooth",
+        "custom/separator",
+        "pulseaudio",
+        "backlight",
+        "custom/separator",
+        "cpu",
+        "memory",
+        "temperature",
+        "custom/separator",
+        "battery",
+        "custom/power"
+    ],
+    
+    // ═══════════════════════════════════════════════════════════
+    // LEFT MODULES
+    // ═══════════════════════════════════════════════════════════
+    
+    "custom/logo": {
+        "format": "󰣇",
+        "tooltip": false,
+        "on-click": "wofi --show drun"
+    },
+    
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "1": "I",
+            "2": "II",
+            "3": "III",
+            "4": "IV",
+            "5": "V",
+            "6": "VI",
+            "7": "VII",
+            "8": "VIII",
+            "9": "IX",
+            "10": "X",
+            "active": "●",
+            "default": "○"
+        },
+        "persistent-workspaces": {
+            "*": 5
+        },
+        "on-click": "activate",
+        "on-scroll-up": "hyprctl dispatch workspace e-1",
+        "on-scroll-down": "hyprctl dispatch workspace e+1"
+    },
+    
+    "hyprland/window": {
+        "format": "{title}",
+        "max-length": 60,
+        "separate-outputs": true,
+        "rewrite": {
+            "(.*) — Mozilla Firefox": "󰈹 $1",
+            "(.*) - Visual Studio Code": "󰨞 $1",
+            "(.*) - Chromium": "󰊯 $1",
+            "(.*)": "$1"
+        }
+    },
+    
+    "custom/separator": {
+        "format": "│",
+        "tooltip": false
+    },
+    
+    // ═══════════════════════════════════════════════════════════
+    // CENTER MODULES
+    // ═══════════════════════════════════════════════════════════
+    
+    "clock": {
+        "format": "󰥔 {:%H:%M:%S}",
+        "format-alt": "󰃭 {:%A, %d %B %Y │ %H:%M:%S}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "year",
+            "mode-mon-col": 3,
+            "weeks-pos": "right",
+            "on-scroll": 1,
+            "format": {
+                "months": "<span color='#7aa2f7'><b>{}</b></span>",
+                "days": "<span color='#c0caf5'>{}</span>",
+                "weeks": "<span color='#565f89'>W{}</span>",
+                "weekdays": "<span color='#7dcfff'>{}</span>",
+                "today": "<span color='#ff6b6b'><b><u>{}</u></b></span>"
+            }
+        },
+        "interval": 1
+    },
+    
+    "custom/media": {
+        "format": "󰎈 {}",
+        "max-length": 40,
+        "exec": "playerctl metadata --format '{{artist}} - {{title}}' 2>/dev/null || echo ''",
+        "exec-if": "playerctl status 2>/dev/null",
+        "interval": 2,
+        "on-click": "playerctl play-pause",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous",
+        "tooltip": false
+    },
+    
+    "custom/weather": {
+        "format": "{}",
+        "exec": "curl -s 'wttr.in/Bern?format=1' | sed 's/+//' 2>/dev/null || echo '󰖐 --'",
+        "interval": 1800,
+        "tooltip": false
+    },
+    
+    // ═══════════════════════════════════════════════════════════
+    // RIGHT MODULES
+    // ═══════════════════════════════════════════════════════════
+    
+    "tray": {
+        "icon-size": 16,
+        "spacing": 8
+    },
+    
+    "network": {
+        "format-wifi": "󰤨 {signalStrength}%",
+        "format-ethernet": "󰈀 {ipaddr}",
+        "format-linked": "󰈀 {ifname}",
+        "format-disconnected": "󰤭",
+        "format-alt": "󰛳 {bandwidthDownBits} 󰛴 {bandwidthUpBits}",
+        "tooltip-format": "󰈀 {ifname}\n󰩟 {ipaddr}/{cidr}\n󱑽 {gwaddr}\n󰤨 {signaldBm}dBm ({signalStrength}%)\n󰛳 {bandwidthDownBits} 󰛴 {bandwidthUpBits}",
+        "tooltip-format-wifi": "󰤨 {essid}\n󰩟 {ipaddr}/{cidr}\n󰤨 {signaldBm}dBm ({signalStrength}%)\n󰛳 {bandwidthDownBits} 󰛴 {bandwidthUpBits}",
+        "tooltip-format-ethernet": "󰈀 {ifname}\n󰩟 {ipaddr}/{cidr}\n󱑽 {gwaddr}\n󰛳 {bandwidthDownBits} 󰛴 {bandwidthUpBits}",
+        "tooltip-format-disconnected": "Disconnected",
+        "interval": 2,
+        "on-click": "nm-connection-editor"
+    },
+    
+    "bluetooth": {
+        "format": "󰂯",
+        "format-connected": "󰂱 {num_connections}",
+        "format-connected-battery": "󰂱 {device_battery_percentage}%",
+        "format-disabled": "󰂲",
+        "format-off": "",
+        "tooltip-format": "{controller_alias}\t{controller_address}",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+        "on-click": "blueman-manager"
+    },
+    
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-bluetooth": "󰂰 {volume}%",
+        "format-bluetooth-muted": "󰂲 Muted",
+        "format-muted": "󰖁 Muted",
+        "format-icons": {
+            "headphone": "󰋋",
+            "hands-free": "󰋎",
+            "headset": "󰋎",
+            "phone": "󰏲",
+            "portable": "󰏲",
+            "car": "󰄋",
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
+        "on-click": "pavucontrol",
+        "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-",
+        "tooltip-format": "{desc}\n{volume}%"
+    },
+    
+    "backlight": {
+        "format": "{icon} {percent}%",
+        "format-icons": ["󰃞", "󰃟", "󰃠"],
+        "on-scroll-up": "brightnessctl set 2%+",
+        "on-scroll-down": "brightnessctl set 2%-",
+        "tooltip": false
+    },
+    
+    "cpu": {
+        "format": "󰻠 {usage}%",
+        "interval": 2,
+        "states": {
+            "warning": 70,
+            "critical": 90
+        },
+        "tooltip-format": "CPU: {usage}%\nLoad: {load}",
+        "on-click": "kitty -e htop"
+    },
+    
+    "memory": {
+        "format": "󰍛 {percentage}%",
+        "interval": 5,
+        "states": {
+            "warning": 70,
+            "critical": 90
+        },
+        "tooltip-format": "RAM: {used:0.1f}GB / {total:0.1f}GB ({percentage}%)\nSwap: {swapUsed:0.1f}GB / {swapTotal:0.1f}GB ({swapPercentage}%)",
+        "on-click": "kitty -e htop"
+    },
+    
+    "temperature": {
+        "format": "󰔏 {temperatureC}°C",
+        "format-critical": "󰸁 {temperatureC}°C",
+        "critical-threshold": 80,
+        "interval": 5,
+        "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
+        "input-filename": "temp1_input",
+        "tooltip-format": "Temperature: {temperatureC}°C / {temperatureF}°F"
+    },
+    
+    "battery": {
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄 {capacity}%",
+        "format-plugged": "󰚥 {capacity}%",
+        "format-full": "󰁹 Full",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "tooltip-format": "{capacity}% - {timeTo}"
+    },
+    
+    "custom/power": {
+        "format": "󰐥",
+        "tooltip": false,
+        "on-click": "wlogout -p layer-shell"
+    }
+}

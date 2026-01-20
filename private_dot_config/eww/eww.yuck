@@ -1,0 +1,536 @@
+; ============================================================================
+; LCARS Enterprise-E Engineering Console - EWW Configuration
+; For 5120x1440 (32:9) Ultrawide Monitor on Hyprland
+; ============================================================================
+
+; ============================================================================
+; VARIABLES - Polling and State
+; ============================================================================
+
+; System Info
+(defpoll hostname :interval "60s" `scripts/system-info.sh hostname`)
+(defpoll uptime :interval "10s" `scripts/system-info.sh uptime`)
+(defpoll kernel :interval "3600s" `uname -r`)
+(defpoll processes :interval "5s" `ps aux --no-heading | wc -l`)
+(defpoll datetime :interval "1s" `date '+%H:%M:%S'`)
+(defpoll date_full :interval "60s" `date '+%Y.%m.%d'`)
+
+; CPU Metrics
+(defpoll cpu_total :interval "1s" `scripts/cpu.sh total`)
+(defpoll cpu_cores :interval "1s" `scripts/cpu.sh cores`)
+
+; Memory Metrics
+(defpoll mem_used :interval "1s" `scripts/memory.sh used`)
+(defpoll mem_total :interval "1s" `scripts/memory.sh total`)
+(defpoll mem_percent :interval "1s" `scripts/memory.sh percent`)
+(defpoll swap_used :interval "2s" `scripts/memory.sh swap_used`)
+(defpoll swap_total :interval "2s" `scripts/memory.sh swap_total`)
+(defpoll swap_percent :interval "2s" `scripts/memory.sh swap_percent`)
+
+; Temperature
+(defpoll cpu_temp :interval "2s" `scripts/temperature.sh cpu`)
+(defpoll gpu_temp :interval "2s" `scripts/temperature.sh gpu`)
+
+; Disk I/O
+(defpoll disk_read :interval "1s" `scripts/disk.sh read`)
+(defpoll disk_write :interval "1s" `scripts/disk.sh write`)
+(defpoll disk_root_percent :interval "10s" `scripts/disk.sh root_percent`)
+(defpoll disk_root_used :interval "10s" `scripts/disk.sh root_used`)
+(defpoll disk_root_total :interval "10s" `scripts/disk.sh root_total`)
+(defpoll disk_home_percent :interval "10s" `scripts/disk.sh home_percent`)
+(defpoll disk_home_used :interval "10s" `scripts/disk.sh home_used`)
+(defpoll disk_home_total :interval "10s" `scripts/disk.sh home_total`)
+
+; Network
+(defpoll net_interface :interval "10s" `scripts/network.sh interface`)
+(defpoll net_ip :interval "30s" `scripts/network.sh ip`)
+(defpoll net_down :interval "1s" `scripts/network.sh down`)
+(defpoll net_up :interval "1s" `scripts/network.sh up`)
+(defpoll net_connections :interval "5s" `scripts/network.sh connections`)
+(defpoll net_status :interval "5s" `scripts/network.sh status`)
+
+; Warp Core Animation State (uses CPU for intensity)
+(defpoll warp_intensity :interval "500ms" `scripts/cpu.sh total`)
+
+; ============================================================================
+; TOP PANEL - System Information
+; ============================================================================
+
+(defwidget top-panel []
+  (box :class "panel top-panel"
+       :orientation "h"
+       :space-evenly false
+       :halign "center"
+    ; Left decorative bracket
+    (box :class "lcars-bracket-left")
+    
+    ; Main info container
+    (box :class "info-row"
+         :orientation "h"
+         :space-evenly false
+         :spacing 50
+      
+      ; Hostname
+      (box :class "info-module"
+           :orientation "v"
+           :space-evenly false
+        (label :class "info-label" :text "VESSEL DESIGNATION")
+        (label :class "info-value hostname" :text hostname))
+      
+      ; Stardate (Date)
+      (box :class "info-module"
+           :orientation "v"
+           :space-evenly false
+        (label :class "info-label" :text "STARDATE")
+        (label :class "info-value date" :text date_full))
+      
+      ; Ship Time
+      (box :class "info-module time-module"
+           :orientation "v"
+           :space-evenly false
+        (label :class "info-label" :text "SHIP TIME")
+        (label :class "info-value time" :text datetime))
+      
+      ; Uptime
+      (box :class "info-module"
+           :orientation "v"
+           :space-evenly false
+        (label :class "info-label" :text "OPERATIONAL TIME")
+        (label :class "info-value" :text uptime))
+      
+      ; Kernel
+      (box :class "info-module"
+           :orientation "v"
+           :space-evenly false
+        (label :class "info-label" :text "CORE VERSION")
+        (label :class "info-value kernel" :text kernel))
+      
+      ; Processes
+      (box :class "info-module"
+           :orientation "v"
+           :space-evenly false
+        (label :class "info-label" :text "ACTIVE PROCESSES")
+        (label :class "info-value processes" :text processes)))
+    
+    ; Right decorative bracket
+    (box :class "lcars-bracket-right")))
+
+; ============================================================================
+; LEFT PANEL - System Monitoring (CPU, Memory, Temps, Disk I/O)
+; ============================================================================
+
+(defwidget left-panel []
+  (box :class "panel left-panel"
+       :orientation "v"
+       :space-evenly false
+       :spacing 20
+       :valign "center"
+    
+    ; Panel header
+    (box :class "panel-header"
+      (label :class "panel-title" :text "◆ ENGINEERING SYSTEMS ◆"))
+    
+    ; CPU Section
+    (box :class "section cpu-section"
+         :orientation "v"
+         :space-evenly false
+         :spacing 8
+      (label :class "section-title" :text "PROCESSING MATRIX")
+      
+      ; Total CPU
+      (box :class "metric-row"
+           :orientation "h"
+           :space-evenly false
+        (label :class "metric-label" :text "TOTAL LOAD")
+        (scale :class {cpu_total >= 90 ? "progress-scale critical" :
+                       cpu_total >= 70 ? "progress-scale warning" : "progress-scale normal"}
+               :min 0
+               :max 100
+               :value cpu_total
+               :orientation "h"
+               :hexpand true)
+        (label :class {cpu_total >= 90 ? "metric-value critical" :
+                       cpu_total >= 70 ? "metric-value warning" : "metric-value"}
+               :text "${cpu_total}%")))
+    
+    ; Memory Section
+    (box :class "section memory-section"
+         :orientation "v"
+         :space-evenly false
+         :spacing 8
+      (label :class "section-title" :text "MEMORY ALLOCATION")
+      
+      ; RAM
+      (box :class "metric-row"
+           :orientation "h"
+           :space-evenly false
+        (label :class "metric-label" :text "PRIMARY")
+        (scale :class {mem_percent >= 90 ? "progress-scale critical" :
+                       mem_percent >= 70 ? "progress-scale warning" : "progress-scale normal"}
+               :min 0
+               :max 100
+               :value mem_percent
+               :orientation "h"
+               :hexpand true)
+        (label :class "metric-value" :text "${mem_percent}%"))
+      (label :class "metric-detail" :text "${mem_used} / ${mem_total}")
+      
+      ; Swap
+      (box :class "metric-row"
+           :orientation "h"
+           :space-evenly false
+        (label :class "metric-label" :text "AUXILIARY")
+        (scale :class {swap_percent >= 90 ? "progress-scale critical" :
+                       swap_percent >= 70 ? "progress-scale warning" : "progress-scale normal"}
+               :min 0
+               :max 100
+               :value swap_percent
+               :orientation "h"
+               :hexpand true)
+        (label :class "metric-value" :text "${swap_percent}%"))
+      (label :class "metric-detail" :text "${swap_used} / ${swap_total}"))
+    
+    ; Temperature Section
+    (box :class "section temp-section"
+         :orientation "v"
+         :space-evenly false
+         :spacing 8
+      (label :class "section-title" :text "THERMAL READINGS")
+      
+      ; CPU Temp
+      (box :class "metric-row"
+           :orientation "h"
+           :space-evenly false
+        (label :class "metric-label" :text "PROCESSOR")
+        (scale :class {cpu_temp >= 85 ? "progress-scale critical" :
+                       cpu_temp >= 70 ? "progress-scale warning" : "progress-scale normal"}
+               :min 0
+               :max 100
+               :value cpu_temp
+               :orientation "h"
+               :hexpand true)
+        (label :class {cpu_temp >= 85 ? "metric-value critical" :
+                       cpu_temp >= 70 ? "metric-value warning" : "metric-value"}
+               :text "${cpu_temp}°C"))
+      
+      ; GPU Temp
+      (box :class "metric-row"
+           :orientation "h"
+           :space-evenly false
+        (label :class "metric-label" :text "GRAPHICS")
+        (scale :class {gpu_temp >= 85 ? "progress-scale critical" :
+                       gpu_temp >= 70 ? "progress-scale warning" : "progress-scale normal"}
+               :min 0
+               :max 100
+               :value gpu_temp
+               :orientation "h"
+               :hexpand true)
+        (label :class {gpu_temp >= 85 ? "metric-value critical" :
+                       gpu_temp >= 70 ? "metric-value warning" : "metric-value"}
+               :text "${gpu_temp}°C")))
+    
+    ; Disk I/O Section
+    (box :class "section io-section"
+         :orientation "v"
+         :space-evenly false
+         :spacing 8
+      (label :class "section-title" :text "DATA TRANSFER RATES")
+      
+      ; Read
+      (box :class "metric-row"
+           :orientation "h"
+           :space-evenly false
+        (label :class "metric-label" :text "▼ READ")
+        (box :class "io-indicator read"
+          (label :class "io-value" :text disk_read)))
+      
+      ; Write
+      (box :class "metric-row"
+           :orientation "h"
+           :space-evenly false
+        (label :class "metric-label" :text "▲ WRITE")
+        (box :class "io-indicator write"
+          (label :class "io-value" :text disk_write))))))
+
+; ============================================================================
+; WARP CORE - Central Animated Feature
+; ============================================================================
+
+(defwidget warp-core []
+  (box :class "warp-core-container"
+       :orientation "v"
+       :valign "center"
+       :halign "center"
+    
+    ; Top connector
+    (box :class "warp-connector top")
+    
+    ; Main core chamber
+    (box :class {warp_intensity >= 90 ? "warp-chamber critical" :
+                 warp_intensity >= 70 ? "warp-chamber warning" :
+                 warp_intensity >= 40 ? "warp-chamber medium" : "warp-chamber idle"}
+         :orientation "v"
+         :valign "center"
+         :halign "center"
+      
+      ; Inner plasma column
+      (box :class "plasma-outer"
+        (box :class {warp_intensity >= 90 ? "plasma-column critical" :
+                     warp_intensity >= 70 ? "plasma-column warning" :
+                     warp_intensity >= 40 ? "plasma-column medium" : "plasma-column idle"}
+          
+          ; Center core glow
+          (box :class {warp_intensity >= 90 ? "plasma-core critical" :
+                       warp_intensity >= 70 ? "plasma-core warning" :
+                       warp_intensity >= 40 ? "plasma-core medium" : "plasma-core idle"})))
+      
+      ; Status readout
+      (box :class "core-status"
+           :orientation "v"
+           :space-evenly false
+        (label :class "core-label" :text "MATTER/ANTIMATTER REACTION")
+        (label :class {warp_intensity >= 90 ? "core-value critical" :
+                       warp_intensity >= 70 ? "core-value warning" : "core-value"}
+               :text "${warp_intensity}%")))
+    
+    ; Bottom connector
+    (box :class "warp-connector bottom")
+    
+    ; Dilithium chamber indicator
+    (box :class "dilithium-status"
+         :orientation "v"
+         :space-evenly false
+      (label :class "dilithium-label" :text "DILITHIUM MATRIX")
+      (box :class {warp_intensity >= 90 ? "dilithium-indicator critical" :
+                   warp_intensity >= 70 ? "dilithium-indicator warning" : "dilithium-indicator stable"}))))
+
+; ============================================================================
+; RIGHT PANEL - Network & Storage
+; ============================================================================
+
+(defwidget right-panel []
+  (box :class "panel right-panel"
+       :orientation "v"
+       :space-evenly false
+       :spacing 20
+       :valign "center"
+    
+    ; Panel header
+    (box :class "panel-header"
+      (label :class "panel-title" :text "◆ OPERATIONS STATUS ◆"))
+    
+    ; Network Section
+    (box :class "section network-section"
+         :orientation "v"
+         :space-evenly false
+         :spacing 10
+      (label :class "section-title" :text "SUBSPACE COMMUNICATIONS")
+      
+      ; Interface status
+      (box :class "network-status-row"
+           :orientation "h"
+           :space-evenly false
+           :spacing 10
+        (box :class {net_status == "up" ? "status-indicator online" : "status-indicator offline"})
+        (label :class "network-interface" :text net_interface)
+        (label :class "network-ip" :text net_ip))
+      
+      ; Download speed
+      (box :class "metric-row"
+           :orientation "h"
+           :space-evenly false
+        (label :class "metric-label" :text "▼ INCOMING")
+        (box :class "network-speed download"
+          (label :class "speed-value" :text net_down)))
+      
+      ; Upload speed
+      (box :class "metric-row"
+           :orientation "h"
+           :space-evenly false
+        (label :class "metric-label" :text "▲ OUTGOING")
+        (box :class "network-speed upload"
+          (label :class "speed-value" :text net_up)))
+      
+      ; Connections
+      (box :class "metric-row"
+           :orientation "h"
+           :space-evenly false
+        (label :class "metric-label" :text "ACTIVE LINKS")
+        (label :class "connections-value" :text net_connections)))
+    
+    ; Storage Section
+    (box :class "section storage-section"
+         :orientation "v"
+         :space-evenly false
+         :spacing 15
+      (label :class "section-title" :text "STORAGE ARRAYS")
+      
+      ; Storage bars container
+      (box :class "storage-bars"
+           :orientation "h"
+           :space-evenly true
+           :spacing 30
+        
+        ; Root partition
+        (box :class "storage-item"
+             :orientation "v"
+             :space-evenly false
+             :spacing 8
+          (box :class "storage-bar-container"
+            (box :class {disk_root_percent >= 90 ? "storage-bar-fill critical" :
+                         disk_root_percent >= 70 ? "storage-bar-fill warning" : "storage-bar-fill normal"}
+                 :style "min-height: ${disk_root_percent * 1.5}px;"))
+          (label :class "storage-label" :text "SYSTEM")
+          (label :class "storage-mount" :text "/")
+          (label :class {disk_root_percent >= 90 ? "storage-percent critical" :
+                         disk_root_percent >= 70 ? "storage-percent warning" : "storage-percent"}
+                 :text "${disk_root_percent}%")
+          (label :class "storage-detail" :text "${disk_root_used}"))
+        
+        ; Home partition
+        (box :class "storage-item"
+             :orientation "v"
+             :space-evenly false
+             :spacing 8
+          (box :class "storage-bar-container"
+            (box :class {disk_home_percent >= 90 ? "storage-bar-fill critical" :
+                         disk_home_percent >= 70 ? "storage-bar-fill warning" : "storage-bar-fill normal"}
+                 :style "min-height: ${disk_home_percent * 1.5}px;"))
+          (label :class "storage-label" :text "USER DATA")
+          (label :class "storage-mount" :text "/home")
+          (label :class {disk_home_percent >= 90 ? "storage-percent critical" :
+                         disk_home_percent >= 70 ? "storage-percent warning" : "storage-percent"}
+                 :text "${disk_home_percent}%")
+          (label :class "storage-detail" :text "${disk_home_used}"))))))
+
+; ============================================================================
+; BOTTOM PANEL - Quick Actions
+; ============================================================================
+
+(defwidget bottom-panel []
+  (box :class "panel bottom-panel"
+       :orientation "h"
+       :space-evenly false
+       :halign "center"
+       :spacing 20
+    
+    ; Left decorative element
+    (box :class "lcars-pill-left")
+    
+    ; Action buttons
+    (box :class "action-buttons"
+         :orientation "h"
+         :space-evenly false
+         :spacing 15
+      
+      ; Lock button
+      (button :class "action-btn lock"
+              :onclick "loginctl lock-session"
+              :tooltip "Lock Workstation"
+        (box :class "btn-content"
+             :orientation "h"
+             :space-evenly false
+             :spacing 8
+          (label :class "btn-icon" :text "󰌾")
+          (label :class "btn-text" :text "LOCK")))
+      
+      ; Suspend button
+      (button :class "action-btn suspend"
+              :onclick "systemctl suspend"
+              :tooltip "Suspend System"
+        (box :class "btn-content"
+             :orientation "h"
+             :space-evenly false
+             :spacing 8
+          (label :class "btn-icon" :text "󰒲")
+          (label :class "btn-text" :text "STANDBY")))
+      
+      ; Reboot button
+      (button :class "action-btn reboot"
+              :onclick "systemctl reboot"
+              :tooltip "Reboot System"
+        (box :class "btn-content"
+             :orientation "h"
+             :space-evenly false
+             :spacing 8
+          (label :class "btn-icon" :text "󰜉")
+          (label :class "btn-text" :text "RESTART")))
+      
+      ; Power off button (red/special styling)
+      (button :class "action-btn power"
+              :onclick "systemctl poweroff"
+              :tooltip "Power Off"
+        (box :class "btn-content"
+             :orientation "h"
+             :space-evenly false
+             :spacing 8
+          (label :class "btn-icon" :text "⏻")
+          (label :class "btn-text" :text "SHUTDOWN"))))
+    
+    ; Right decorative element
+    (box :class "lcars-pill-right")))
+
+; ============================================================================
+; MAIN LAYOUT
+; ============================================================================
+
+(defwidget main-layout []
+  (box :class "main-container"
+       :orientation "v"
+       :space-evenly false
+    
+    ; Top panel
+    (box :class "top-area"
+         :halign "center"
+         :valign "start"
+      (top-panel))
+    
+    ; Middle section with panels and warp core
+    (box :class "middle-area"
+         :orientation "h"
+         :space-evenly false
+         :hexpand true
+         :vexpand true
+      
+      ; Left panel
+      (box :class "left-area"
+           :halign "start"
+           :valign "center"
+        (left-panel))
+      
+      ; Center - Warp Core
+      (box :class "center-area"
+           :halign "center"
+           :valign "center"
+           :hexpand true
+        (warp-core))
+      
+      ; Right panel
+      (box :class "right-area"
+           :halign "end"
+           :valign "center"
+        (right-panel)))
+    
+    ; Bottom panel
+    (box :class "bottom-area"
+         :halign "center"
+         :valign "end"
+      (bottom-panel))))
+
+; ============================================================================
+; WINDOW DEFINITION
+; ============================================================================
+
+(defwindow lcars-console
+  :monitor 0
+  :geometry (geometry
+              :x "0%"
+              :y "0%"
+              :width "100%"
+              :height "100%"
+              :anchor "center center")
+  :stacking "bottom"
+  :exclusive false
+  :focusable false
+  :namespace "eww-lcars"
+  (main-layout))

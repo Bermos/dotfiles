@@ -108,6 +108,7 @@ tooltip label {
 #cpu,
 #memory,
 #temperature,
+#power-profiles-daemon,
 #battery,
 #custom-power {
     color: @text_primary;
@@ -502,6 +503,35 @@ tooltip label {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+ * POWER PROFILE - WITH STATES
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+#power-profiles-daemon {
+    color: @accent_ice;
+    padding: 4px 12px;
+}
+
+#power-profiles-daemon:hover {
+    background: @bg_hover;
+    box-shadow: 0 0 12px rgba(125, 207, 255, 0.2);
+}
+
+#power-profiles-daemon.performance {
+    color: @status_warning;
+    border-color: @status_warning;
+}
+
+#power-profiles-daemon.balanced {
+    color: @accent_cyan;
+    border-color: @accent_cyan;
+}
+
+#power-profiles-daemon.power-saver {
+    color: @status_success;
+    border-color: @status_success;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
  * POWER BUTTON
  * ───────────────────────────────────────────────────────────────────────────── */
 
@@ -558,7 +588,8 @@ tooltip label {
 #pulseaudio:hover,
 #cpu:hover,
 #memory:hover,
-#clock:hover {
+#clock:hover,
+#power-profiles-daemon:hover {
     border-color: @border_glow;
 }
 

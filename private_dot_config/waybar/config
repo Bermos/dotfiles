@@ -37,6 +37,7 @@
         "memory",
         "temperature",
         "custom/separator",
+        "power-profiles-daemon",
         "battery",
         "custom/power"
     ],
@@ -66,9 +67,6 @@
             "10": "X",
             "active": "●",
             "default": "○"
-        },
-        "persistent-workspaces": {
-            "*": 5
         },
         "on-click": "activate",
         "on-scroll-up": "hyprctl dispatch workspace e-1",
@@ -229,6 +227,18 @@
         "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
         "input-filename": "temp1_input",
         "tooltip-format": "Temperature: {temperatureC}°C / {temperatureF}°F"
+    },
+
+    "power-profiles-daemon": {
+      "format": "{icon}",
+      "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+      "tooltip": true,
+      "format-icons": {
+        "default": "",
+        "performance": "",
+        "balanced": "",
+        "power-saver": ""
+      }
     },
     
     "battery": {
